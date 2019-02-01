@@ -1,0 +1,29 @@
+# OOCD
+OOCD_TARGET      = stm32f1x
+OOCD_ITF         = $(OPENLAB_GIT)/platform/scripts/iotlab-m3.cfg
+
+# Platform config
+OPENLAB_SRC += iotlab-m3/iotlab-m3.c
+OPENLAB_SRC += iotlab-m3/iotlab-m3_drivers.c
+OPENLAB_SRC += iotlab-m3/iotlab-m3_lib.c
+OPENLAB_SRC += iotlab-m3/iotlab-m3_periph.c
+
+# Drivers
+OPENLAB_SRC += lsm303dlhc/lsm303dlhc.c
+OPENLAB_SRC += lps331ap/lps331ap.c
+OPENLAB_SRC += l3g4200d/l3g4200d.c
+OPENLAB_SRC += isl29020/isl29020.c
+OPENLAB_SRC += n25xxx/n25xxx.c
+
+CONTIKI_TARGET_SOURCEFILES += xmem.c
+CONTIKI_TARGET_SOURCEFILES += cfs-coffee.c
+
+# Wrappers from Openlab to Contiki API
+CONTIKI_TARGET_SOURCEFILES += acc-mag-sensor.c
+CONTIKI_TARGET_SOURCEFILES += fake-button-sensor.c
+CONTIKI_TARGET_SOURCEFILES += gyr-sensor.c
+CONTIKI_TARGET_SOURCEFILES += light-sensor.c
+CONTIKI_TARGET_SOURCEFILES += pressure-sensor.c
+
+# Contiki-NG CFS module
+MODULES += os/storage/cfs

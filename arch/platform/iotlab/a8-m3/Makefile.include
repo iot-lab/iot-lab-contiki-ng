@@ -1,0 +1,18 @@
+# OOCD
+OOCD_TARGET      = stm32f1x
+OOCD_ITF         = $(OPENLAB_GIT)/platform/scripts/iotlab-a8-m3.cfg
+
+# Platform config
+OPENLAB_SRC += iotlab-a8-m3/iotlab-a8-m3.c
+OPENLAB_SRC += iotlab-a8-m3/iotlab-a8-m3_drivers.c
+OPENLAB_SRC += iotlab-a8-m3/iotlab-a8-m3_lib.c
+OPENLAB_SRC += iotlab-a8-m3/iotlab-a8-m3_periph.c
+
+# Drivers
+OPENLAB_SRC += lsm303dlhc/lsm303dlhc.c
+OPENLAB_SRC += l3g4200d/l3g4200d.c
+
+# Wrappers from Openlab to Contiki API
+CONTIKI_TARGET_SOURCEFILES += acc-mag-sensor.c
+CONTIKI_TARGET_SOURCEFILES += fake-button-sensor.c
+CONTIKI_TARGET_SOURCEFILES += gyr-sensor.c
