@@ -124,6 +124,7 @@ CONTIKI_TARGET_SOURCEFILES +=          \
          $(OPENLAB_SRC)                \
          platform.c                    \
          leds.c                        \
+         int-master.c                  \
          sensors.c                     \
          slip.c                        \
          clock-systick.c               \
