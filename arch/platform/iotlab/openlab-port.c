@@ -103,3 +103,16 @@ void platform_exit_critical()
         asm volatile("cpsie i");
     }
 }
+
+uint32_t get_primask()
+{
+    uint32_t result;
+
+    asm volatile("MRS %0, primask" : "=r" (result));
+    return(result);
+}
+
+void set_primask(uint32_t primask)
+{
+    asm volatile("MSR primask, %0" : : "r" (primask) : "memory");
+}
