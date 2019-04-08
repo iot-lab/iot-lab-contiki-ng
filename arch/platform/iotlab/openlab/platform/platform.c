@@ -117,7 +117,7 @@ __attribute__((always_inline)) static inline uint32_t get_primask()
 
 __attribute__((always_inline)) static inline void set_primask(uint32_t primask)
 {
-    asm volatile("MSR primask, %0" : : "r" (primask) : "memory");
+    asm volatile("MSR primask, %0" :: "r" (primask));
 }
 
 
