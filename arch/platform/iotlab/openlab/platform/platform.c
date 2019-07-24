@@ -107,6 +107,20 @@ __attribute__((weak)) void platform_exit_critical()
     }
 }
 
+__attribute__((always_inline)) static inline uint32_t get_primask()
+{
+    uint32_t result;
+
+    asm volatile("MRS %0, primask" : "=r" (result));
+    return(result);
+}
+
+__attribute__((always_inline)) static inline void set_primask(uint32_t primask)
+{
+    asm volatile("MSR primask, %0" :: "r" (primask));
+}
+
+
 __attribute__((weak)) uint32_t button_state()
 {
     return 0;

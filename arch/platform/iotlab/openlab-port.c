@@ -87,19 +87,25 @@ void platform_net_setup(void) { }
 
 platform_reset_cause_t platform_reset_cause;
 
-static int critical_count = 0;
-
 void platform_enter_critical()
 {
     asm volatile ("cpsid i");
-    critical_count++;
 }
 
 void platform_exit_critical()
 {
-    critical_count--;
-    if (critical_count == 0)
-    {
-        asm volatile("cpsie i");
-    }
+    asm volatile("cpsie i");
+}
+
+uint32_t get_primask()
+{
+    uint32_t result;
+
+    asm volatile("MRS %0, primask" : "=r" (result));
+    return(result);
+}
+
+void set_primask(uint32_t primask)
+{
+    asm volatile("MSR primask, %0" :: "r" (primask));
 }

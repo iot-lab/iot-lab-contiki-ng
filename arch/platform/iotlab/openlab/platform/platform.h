@@ -200,6 +200,19 @@ void platform_enter_critical();
  */
 void platform_exit_critical();
 
+/** Get Priority Mask
+ *
+ * Returns the current state of the priority mask bit from the Priority Mask Register
+ */
+uint32_t get_primask();
+
+/**  Set Priority Mask
+ *
+ * Assigns the given value to the Priority Mask Register
+ */
+void set_primask(uint32_t primask);
+
+
 /**
  * A function of prototype as follows may be defined to automatically start
  * the internal watchdog on startup if it returns 1.
