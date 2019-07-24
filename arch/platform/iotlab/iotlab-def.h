@@ -87,7 +87,9 @@ typedef int32_t  s32_t;
 
 #define RF2XX_DEVICE rf231
 #define NETSTACK_CONF_RADIO         rf2xx_driver
+
 /* Max payload of rf2xx is 125 bytes (128 -1 for length -2 for CRC) */
+#define rf2xx_driver_max_payload_len   125
 #define PACKETBUF_CONF_SIZE         125
 /* The rf2xx drivers do not support H/W ack */
 #define CSMA_CONF_SEND_SOFT_ACK       1
