@@ -63,16 +63,14 @@ extern rf2xx_t RF2XX_DEVICE;
  * rf2xx_wr_transmit will copy from tx_buf to the FIFO and then send.
  * - When RF2XX_SOFT_PREPARE is unset, rf2xx_wr_prepare actually copies to the FIFO, and rf2xx_wr_transmit
  * only will only trigger the transmission. */
-#define RF2XX_SOFT_PREPARE 1
+#define RF2XX_SOFT_PREPARE (MAC_CONF_WITH_TSCH ? 0 : 1)
 #endif
 
 /* TSCH requires sending and receiving from interrupt, which requires not to rely on the interrupt-driven state only.
  * Instead, we use rf2xx_reg_write and rf2xx_reg_read in the sending and receiving routines. This, however breaks
  * should the driver be interrupted by an ISR. In TSCH, this never happens as transmissions and receptions are
  * done from rtimer interrupt. Keep this disabled for ContikiMAC and NullRDC. */
-#ifndef RF2XX_WITH_TSCH
-#define RF2XX_WITH_TSCH 0
-#endif
+#define RF2XX_WITH_TSCH MAC_CONF_WITH_TSCH
 
 #define RF2XX_MAX_PAYLOAD 125
 #if RF2XX_SOFT_PREPARE
