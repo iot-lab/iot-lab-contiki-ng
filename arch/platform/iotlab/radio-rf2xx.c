@@ -70,7 +70,11 @@ extern rf2xx_t RF2XX_DEVICE;
  * Instead, we use rf2xx_reg_write and rf2xx_reg_read in the sending and receiving routines. This, however breaks
  * should the driver be interrupted by an ISR. In TSCH, this never happens as transmissions and receptions are
  * done from rtimer interrupt. Keep this disabled for ContikiMAC and NullRDC. */
+#ifdef MAC_CONF_WITH_TSCH
 #define RF2XX_WITH_TSCH MAC_CONF_WITH_TSCH
+#else
+#define RF2XX_WITH_TSCH 0
+#endif
 
 #define RF2XX_MAX_PAYLOAD 125
 #if RF2XX_SOFT_PREPARE
