@@ -63,14 +63,14 @@ extern rf2xx_t RF2XX_DEVICE;
  * rf2xx_wr_transmit will copy from tx_buf to the FIFO and then send.
  * - When RF2XX_SOFT_PREPARE is unset, rf2xx_wr_prepare actually copies to the FIFO, and rf2xx_wr_transmit
  * only will only trigger the transmission. */
-#define RF2XX_SOFT_PREPARE (MAC_CONF_WITH_TSCH ? 0 : 1)
+#define RF2XX_SOFT_PREPARE (!(MAC_CONF_WITH_TSCH))
 #endif
 
 /* TSCH requires sending and receiving from interrupt, which requires not to rely on the interrupt-driven state only.
  * Instead, we use rf2xx_reg_write and rf2xx_reg_read in the sending and receiving routines. This, however breaks
  * should the driver be interrupted by an ISR. In TSCH, this never happens as transmissions and receptions are
  * done from rtimer interrupt. Keep this disabled for ContikiMAC and NullRDC. */
-#define RF2XX_WITH_TSCH MAC_CONF_WITH_TSCH
+#define RF2XX_WITH_TSCH (MAC_CONF_WITH_TSCH)
 
 #define RF2XX_MAX_PAYLOAD 125
 #if RF2XX_SOFT_PREPARE
@@ -273,16 +273,16 @@ rf2xx_wr_transmit(unsigned short transmit_len)
     // Start TX
     rf2xx_slp_tr_set(RF2XX_DEVICE);
 
-    if(!RF2XX_WITH_TSCH) {
-      // Wait until the end of the packet
-      while (rf2xx_state == RF_TX);
-      ret = (rf2xx_state == RF_TX_DONE) ? RADIO_TX_OK : RADIO_TX_ERR;
-    } else {
-      // Wait until the transmission starts and ends
-      while(!(rf2xx_get_status(RF2XX_DEVICE) == RF2XX_TRX_STATUS__BUSY_TX));
-      while(!((rf2xx_get_status(RF2XX_DEVICE) != RF2XX_TRX_STATUS__BUSY_TX) || (rf2xx_state != RF_TX)));
-      ret = RADIO_TX_OK;
-    }
+#if !RF2XX_WITH_TSCH
+    // Wait until the end of the packet
+    while (rf2xx_state == RF_TX);
+    ret = (rf2xx_state == RF_TX_DONE) ? RADIO_TX_OK : RADIO_TX_ERR;
+#else /* RF2XX_WITH_TSCH */
+    // Wait until the transmission starts and ends
+    while(!(rf2xx_get_status(RF2XX_DEVICE) == RF2XX_TRX_STATUS__BUSY_TX));
+    while(!((rf2xx_get_status(RF2XX_DEVICE) != RF2XX_TRX_STATUS__BUSY_TX) || (rf2xx_state != RF_TX)));
+    ret = RADIO_TX_OK;
+#endif /* RF2XX_WITH_TSCH */
 
 
 #ifdef RF2XX_LEDS_ON
@@ -391,11 +391,11 @@ rf2xx_wr_channel_clear(void)
 static int
 rf2xx_wr_receiving_packet(void)
 {
-  if(!RF2XX_WITH_TSCH) {
-    return (rf2xx_state == RF_RX) ? 1 : 0;
-  } else {
-    return (rf2xx_state == RF_RX) || rf2xx_get_status(RF2XX_DEVICE) == RF2XX_TRX_STATUS__BUSY_RX;
-  }
+#if !RF2XX_WITH_TSCH
+  return (rf2xx_state == RF_RX) ? 1 : 0;
+#else /* RF2XX_WITH_TSCH */
+  return (rf2xx_state == RF_RX) || rf2xx_get_status(RF2XX_DEVICE) == RF2XX_TRX_STATUS__BUSY_RX;
+#endif /* RF2XX_WITH_TSCH */
 }
 
 /*---------------------------------------------------------------------------*/
@@ -404,14 +404,14 @@ rf2xx_wr_receiving_packet(void)
 static int
 rf2xx_wr_pending_packet(void)
 {
-  if(!RF2XX_WITH_TSCH) {
-    return (rf2xx_state == RF_RX_DONE) ? 1 : 0;
-  } else {
-    if(rf2xx_reg_read(RF2XX_DEVICE, RF2XX_REG__IRQ_STATUS) & RF2XX_IRQ_STATUS_MASK__TRX_END) {
-      rf2xx_state = RF_RX_DONE;
-    }
-    return rf2xx_state == RF_RX_DONE;
+#if !RF2XX_WITH_TSCH
+  return (rf2xx_state == RF_RX_DONE) ? 1 : 0;
+#else /* RF2XX_WITH_TSCH */
+  if(rf2xx_reg_read(RF2XX_DEVICE, RF2XX_REG__IRQ_STATUS) & RF2XX_IRQ_STATUS_MASK__TRX_END) {
+    rf2xx_state = RF_RX_DONE;
   }
+  return rf2xx_state == RF_RX_DONE;
+#endif /* RF2XX_WITH_TSCH */
 }
 
 /*---------------------------------------------------------------------------*/
