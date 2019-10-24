@@ -69,10 +69,8 @@ static void rtimer_cb( handler_arg_t arg, uint16_t value )
 {
     (void) value;
 
-    ENERGEST_ON(ENERGEST_TYPE_IRQ);
     timer_set_channel_compare( RTIMER_TIMER, RTIMER_CHANNEL, 0, NULL, NULL );
     rtimer_run_next();
-    ENERGEST_OFF(ENERGEST_TYPE_IRQ);
 }
 
 void rtimer_arch_schedule(rtimer_clock_t t)
