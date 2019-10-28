@@ -34,12 +34,15 @@
 
 #include "contiki.h"
 #include "contiki-net.h"
+#include "sys/energest.h"
 
 #include "lib/sensors.h"
 #include "dev/serial-line.h"
 #include "dev/uart1.h"
 #include "dev/watchdog.h"
 #include "drivers/unique_id.h"
+
+#include "pwr.h"
 
 #if SLIP_ARCH_CONF_ENABLED
 #include "dev/slip.h"
@@ -131,5 +134,7 @@ platform_init_stage_three(void)
 void
 platform_idle(void)
 {
-  /* Not implemented yet */
+  ENERGEST_SWITCH(ENERGEST_TYPE_CPU, ENERGEST_TYPE_LPM);
+  pwr_enter_sleep();
+  ENERGEST_SWITCH(ENERGEST_TYPE_LPM, ENERGEST_TYPE_CPU);
 }
