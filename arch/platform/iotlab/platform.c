@@ -106,6 +106,7 @@ platform_init_stage_one(void)
 {
   /* Initialize OpenLab */
   platform_init();
+  ENERGEST_ON(ENERGEST_TYPE_CPU);
 }
 /*---------------------------------------------------------------------------*/
 void
