@@ -40,6 +40,7 @@
 #include "contiki-net.h"
 #include "net/packetbuf.h"
 #include "sys/rtimer.h"
+#include "sys/energest.h"
 #include "dev/leds.h"
 
 /*---------------------------------------------------------------------------*/
@@ -273,6 +274,7 @@ rf2xx_wr_transmit(unsigned short transmit_len)
     // Start TX
     rf2xx_slp_tr_set(RF2XX_DEVICE);
 
+    ENERGEST_SWITCH(ENERGEST_TYPE_LISTEN, ENERGEST_TYPE_TRANSMIT);
 #if !RF2XX_WITH_TSCH
     // Wait until the end of the packet
     while (rf2xx_state == RF_TX);
@@ -283,7 +285,7 @@ rf2xx_wr_transmit(unsigned short transmit_len)
     while(!((rf2xx_get_status(RF2XX_DEVICE) != RF2XX_TRX_STATUS__BUSY_TX) || (rf2xx_state != RF_TX)));
     ret = RADIO_TX_OK;
 #endif /* RF2XX_WITH_TSCH */
-
+    ENERGEST_SWITCH(ENERGEST_TYPE_TRANSMIT, ENERGEST_TYPE_LISTEN);
 
 #ifdef RF2XX_LEDS_ON
     leds_off(LEDS_RED);
@@ -439,6 +441,7 @@ rf2xx_wr_on(void)
     {
         listen();
     }
+
     return 1;
 }
 
@@ -468,6 +471,7 @@ rf2xx_wr_off(void)
         idle();
         rf2xx_state = RF_IDLE;
     }
+
     return 1;
 }
 
@@ -832,6 +836,7 @@ static void idle(void)
         reg &= ~RF2XX_TRX_CTRL_1_MASK__PA_EXT_EN;
         rf2xx_reg_write(RF2XX_DEVICE, RF2XX_REG__TRX_CTRL_1, reg);
     }
+    ENERGEST_OFF(ENERGEST_TYPE_LISTEN);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -863,6 +868,7 @@ static void listen(void)
     rf2xx_state = RF_LISTEN;
     rf2xx_set_state(RF2XX_DEVICE, RF2XX_TRX_STATE__RX_ON);
     platform_exit_critical();
+    ENERGEST_ON(ENERGEST_TYPE_LISTEN);
 }
 
 /*---------------------------------------------------------------------------*/
