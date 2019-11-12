@@ -6,6 +6,7 @@
 #include "dev/light-sensor.h"
 #include "dev/pressure-sensor.h"
 
+BREAK
 
 /** Sensors **/
 const struct sensors_sensor *sensors[] = {
