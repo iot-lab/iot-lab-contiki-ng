@@ -7,9 +7,10 @@ source $CONTIKI/tests/utils.sh
 
 # Compile for the a8-m3 board
 ARCH_PATH=../../../arch make -C $CONTIKI/examples/hello-world TARGET=iotlab BOARD=a8-m3 > make.log 2> make.err
+RET=$?
 
 cp make.log $BASENAME.testlog
-if [ $? -eq 0 ] ; then
+if [ $RET -eq 0 ] ; then
   printf "%-32s TEST OK\n" "$BASENAME" 
 else
   echo "==== make.log ====" ; cat make.log;
