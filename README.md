@@ -1,6 +1,8 @@
 Welcome to Contiki-NG for IoT-LAB !
 ==================================
 
+[![Build Status](https://travis-ci.org/iot-lab/iot-lab-contiki-ng.svg?branch=master)](https://travis-ci.org/iot-lab/iot-lab-contiki-ng)
+
 This repository is a port of the official Contiki-NG repository, bringing support for the IoT-LAB platform.
 
 Supported boards (arch/platform/iotlab/ directory):
