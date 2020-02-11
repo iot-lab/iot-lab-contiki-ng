@@ -37,6 +37,8 @@
 #include "sys/energest.h"
 
 #include "lib/sensors.h"
+#include "net/netstack.h"
+#include "net/mac/framer/frame802154.h"
 #include "dev/serial-line.h"
 #include "dev/uart1.h"
 #include "dev/watchdog.h"
@@ -99,7 +101,13 @@ set_linkaddr(void)
 #endif
 #endif
 }
-
+/*---------------------------------------------------------------------------*/
+static void
+set_rf_params(void)
+{
+  NETSTACK_RADIO.set_value(RADIO_PARAM_PAN_ID, IEEE802154_PANID);
+  NETSTACK_RADIO.set_value(RADIO_PARAM_CHANNEL, IEEE802154_DEFAULT_CHANNEL);
+}
 /*---------------------------------------------------------------------------*/
 void
 platform_init_stage_one(void)
@@ -129,6 +137,9 @@ void
 platform_init_stage_three(void)
 {
   LOG_INFO("Target: %s, board: %s\n", CONTIKI_TARGET_STRING, CONTIKI_BOARD_STRING);
+
+  set_rf_params();
+
   process_start(&sensors_process, NULL);
 }
 /*---------------------------------------------------------------------------*/
