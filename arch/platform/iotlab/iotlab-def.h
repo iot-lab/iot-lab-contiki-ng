@@ -50,7 +50,7 @@
 
 #define CLOCK_CONF_SECOND 100
 typedef uint32_t  clock_time_t;
-#define RTIMER_CONF_CLOCK_SIZE 2
+#define RTIMER_CONF_CLOCK_SIZE 4
 
 /* ---------------------------------------- */
 /*

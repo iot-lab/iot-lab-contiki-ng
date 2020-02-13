@@ -60,7 +60,7 @@ void rtimer_arch_init(void)
 
 rtimer_clock_t rtimer_arch_now(void)
 {
-    return timer_time( RTIMER_TIMER );
+    return soft_timer_time();
 }
 
 /*-----------------------------------------------------------------------------------*/
